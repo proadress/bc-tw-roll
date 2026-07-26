@@ -1,0 +1,10 @@
+.DS_Store
+*.log
+*.pid
+*.sock
+__pycache__/
+*.pyc
+
+# Keep the inspected GitLab snapshot local. This repo tracks only the small app.
+work/
+outputs/

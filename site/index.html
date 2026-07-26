@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%B2%3C/text%3E%3C/svg%3E">
+  <title>未來三個超激查詢</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #667085;
+      --paper: #f6f7fb;
+      --panel: #ffffff;
+      --line: #d8dee8;
+      --accent: #b4233a;
+      --blue: #145c78;
+      --live: #087f5b;
+      --future: #315ac8;
+      --past: #8a94a6;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--paper); }
+    header {
+      background: #101828;
+      color: white;
+      padding: 30px clamp(16px, 4vw, 56px) 24px;
+      border-bottom: 4px solid var(--accent);
+    }
+    .hero, main { max-width: 1180px; margin: 0 auto; }
+    h1 { margin: 0 0 10px; font-size: clamp(30px, 5vw, 56px); line-height: 1.05; letter-spacing: 0; }
+    .lead { margin: 0; color: #d9e2f1; line-height: 1.6; }
+    .privacy { margin: 10px 0 0; color: #b8c4d8; font-size: 13px; line-height: 1.5; }
+    main { padding: 24px clamp(14px, 4vw, 32px) 48px; }
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(150px, 1fr)) auto;
+      gap: 12px;
+      align-items: end;
+      margin-bottom: 18px;
+      padding: 16px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    label { display: grid; gap: 6px; color: #344054; font-size: 13px; font-weight: 800; }
+    input, select, button {
+      min-height: 40px;
+      border: 1px solid #cfd6e2;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font: inherit;
+      background: white;
+      color: var(--ink);
+    }
+    button {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: white;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .metric {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+    }
+    .metric span { display: block; color: var(--muted); font-size: 13px; }
+    .metric strong { display: block; margin-top: 4px; font-size: 24px; }
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 18px;
+      padding: 4px;
+      background: #e8edf5;
+      border-radius: 8px;
+      width: fit-content;
+    }
+    .filter-bar button {
+      min-height: 36px;
+      border: 0;
+      background: transparent;
+      color: #344054;
+      border-radius: 6px;
+      padding: 8px 13px;
+      font-weight: 900;
+    }
+    .filter-bar button.active {
+      background: white;
+      color: #101828;
+      box-shadow: 0 1px 3px rgba(16,24,40,.14);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+    }
+    .pool {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--past);
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 10px 26px rgba(21,32,52,.06);
+    }
+    .pool.live { border-left-color: var(--live); }
+    .pool.upcoming { border-left-color: var(--future); }
+    .top { display: flex; justify-content: space-between; gap: 10px; align-items: center; margin-bottom: 10px; }
+    .status {
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: #f0f2f5;
+      color: #687386;
+      font-size: 13px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .live .status { background: #edf7f4; color: var(--live); }
+    .upcoming .status { background: #eef3ff; color: var(--future); }
+    .date { color: var(--muted); font-size: 13px; text-align: right; }
+    h2 { margin: 0 0 8px; min-height: 48px; font-size: 19px; line-height: 1.28; }
+    .event-id { color: var(--muted); font-size: 13px; min-height: 24px; }
+    .answers {
+      display: grid;
+      gap: 8px;
+      margin: 14px 0;
+    }
+    .answer {
+      display: grid;
+      grid-template-columns: 58px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      padding: 14px;
+      background: #f8fafc;
+      border: 1px solid #e6ebf2;
+      border-radius: 8px;
+    }
+    .pos {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: white;
+      font-size: 18px;
+      font-weight: 900;
+    }
+    .cat { font-size: 18px; font-weight: 900; line-height: 1.25; }
+    .meta, .rates { color: var(--muted); font-size: 13px; }
+    .rates { display: flex; flex-wrap: wrap; gap: 8px; }
+    .rates span { padding: 5px 8px; background: #f1f5f9; border-radius: 999px; }
+    .open { display: inline-block; margin-top: 12px; color: var(--blue); font-weight: 900; text-decoration: none; }
+    .notice {
+      padding: 16px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 8px;
+      color: #7c2d12;
+      line-height: 1.55;
+    }
+    footer {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 clamp(14px, 4vw, 32px) 32px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    footer a { color: var(--blue); }
+    @media (max-width: 820px) {
+      .controls, .summary { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <h1>未來三個超激</h1>
+      <p class="lead">讀取本 repo 的台版卡池資料，依 seed 和目前位置計算每個卡池接下來三個超激稀有。</p>
+      <p class="privacy">Seed 不會寫進 repo；輸入值只保存在這個瀏覽器。開啟上游完整工具時，seed 才會放入外部連結。</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="controls">
+      <label>Seed
+        <input id="seed" inputmode="numeric" autocomplete="off" placeholder="請輸入已知 seed">
+      </label>
+      <label>目前已走到
+        <input id="currentPosition" value="1A" autocomplete="off">
+      </label>
+      <label>月份
+        <input id="month" type="month">
+      </label>
+      <label>卡池狀態
+        <select id="statusFilter">
+          <option value="all">全部</option>
+          <option value="live" selected>進行中</option>
+          <option value="upcoming">未來</option>
+          <option value="past">已結束</option>
+        </select>
+      </label>
+      <button id="run">計算</button>
+    </section>
+
+    <section class="filter-bar" aria-label="卡池狀態快速篩選">
+      <button type="button" data-status="all">全部</button>
+      <button type="button" data-status="live" class="active">進行中</button>
+      <button type="button" data-status="upcoming">未來</button>
+      <button type="button" data-status="past">已結束</button>
+    </section>
+
+    <section id="notice" class="notice">讀取資料中...</section>
+    <section id="summary" class="summary" hidden></section>
+    <section id="results" class="grid"></section>
+  </main>
+
+  <footer>
+    資料來源：<a href="https://gitlab.com/godfat/battle-cats-rolls" target="_blank" rel="noopener noreferrer">godfat/battle-cats-rolls</a>
+    （Apache-2.0）。這是非官方簡化預覽，遇到重複角色或換軌規則時請以上游完整工具交叉確認。
+  </footer>
+
+  <script>
+    const DATA_URL = "../data/bc-tw-lite.json";
+    const RARITY = {2: "稀有", 3: "激稀有", 4: "超激稀有", 5: "傳說稀有"};
+    const RARITY_KEY = {2: "rare", 3: "supa", 4: "uber", 5: "legend"};
+    const BASE = 10000;
+    const state = {data: null};
+    const STORAGE = {
+      seed: "bc-tw-roll.seed",
+      position: "bc-tw-roll.position"
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    })[char]);
+
+    function advanceSeed(seed) {
+      seed >>>= 0;
+      seed = (seed ^ ((seed << 13) >>> 0)) >>> 0;
+      seed = (seed ^ (seed >>> 17)) >>> 0;
+      seed = (seed ^ ((seed << 15) >>> 0)) >>> 0;
+      return seed >>> 0;
+    }
+
+    function parsePosition(position) {
+      const match = String(position).trim().toUpperCase().match(/^(\d+)([AB])$/);
+      if (!match) throw new Error("位置格式要像 8A");
+      const index = Number(match[1]);
+      if (index < 1) throw new Error("位置必須從 1A 或 1B 開始");
+      return {index, track: match[2]};
+    }
+
+    function readSeed() {
+      const raw = $("seed").value.trim();
+      if (!/^\d+$/.test(raw)) throw new Error("Seed 必須是 1 到 4294967295 的整數");
+      const seed = Number(raw);
+      if (!Number.isSafeInteger(seed) || seed < 1 || seed > 0xffffffff) {
+        throw new Error("Seed 必須是 1 到 4294967295 的整數");
+      }
+      return seed >>> 0;
+    }
+
+    function startAfter(position) {
+      const parsed = parsePosition(position);
+      return {index: parsed.index + 1, track: parsed.track};
+    }
+
+    function buildSlots(data, gachaId) {
+      const gacha = data.gacha[String(gachaId)];
+      if (!gacha) return null;
+      const slots = {2: [], 3: [], 4: [], 5: []};
+      for (const catId of gacha.cats) {
+        const cat = data.cats[String(catId)];
+        if (!cat) continue;
+        if (!slots[cat.rarity]) slots[cat.rarity] = [];
+        slots[cat.rarity].push(catId);
+      }
+      return slots;
+    }
+
+    function rarityFromScore(score, event) {
+      const rare = event.rare;
+      const supa = event.supa;
+      const uber = event.uber;
+      if (score < rare) return 2;
+      if (score < rare + supa) return 3;
+      if (score < rare + supa + uber) return 4;
+      return 5;
+    }
+
+    function rollCat(data, event, slots, raritySeed, slotSeed, sequence, track) {
+      const score = raritySeed % BASE;
+      const rarity = rarityFromScore(score, event);
+      const pool = slots[rarity] || [];
+      const slot = pool.length ? slotSeed % pool.length : null;
+      const id = slot === null ? -1 : pool[slot];
+      const cat = data.cats[String(id)] || {id, name: String(id), names: [String(id)], rarity};
+      return {
+        number: `${sequence}${track}`,
+        sequence, track, id, score, rarity, slot, slotSeed,
+        name: cat.names?.[0] || cat.name || String(id)
+      };
+    }
+
+    function simulate(data, event, count) {
+      const slots = buildSlots(data, event.gacha_id);
+      if (!slots) return [];
+
+      let seed = readSeed();
+      seed = advanceSeed(seed);
+      const rows = [];
+
+      for (let sequence = 1; sequence <= count; sequence++) {
+        const aSeed = seed;
+        seed = advanceSeed(seed);
+        const bSeed = seed;
+        const aSlotSeed = seed;
+        seed = advanceSeed(seed);
+        const bSlotSeed = seed;
+        const aCat = rollCat(data, event, slots, aSeed, aSlotSeed, sequence, "A");
+        const bCat = rollCat(data, event, slots, bSeed, bSlotSeed, sequence, "B");
+        rows.push([aCat, bCat]);
+      }
+      return rows;
+    }
+
+    function findNextUbers(data, event, from, limit = 3) {
+      const rows = simulate(data, event, 500);
+      const trackIndex = from.track === "A" ? 0 : 1;
+      const result = [];
+      for (const row of rows) {
+        const roll = row[trackIndex];
+        if (roll.sequence < from.index) continue;
+        if (roll.rarity === 4 || roll.rarity === 5) {
+          result.push(roll);
+          if (result.length >= limit) return result;
+        }
+      }
+      return result;
+    }
+
+    function statusFor(event, today) {
+      if (event.end_on < today) return ["past", "已結束"];
+      if (event.start_on > today) return ["upcoming", "未來"];
+      return ["live", "進行中"];
+    }
+
+    function isTicketPool(event) {
+      const name = String(event.name || "");
+      return name.includes("白金轉蛋") || name.includes("傳說轉蛋");
+    }
+
+    function eventUrl(eventId) {
+      const seed = encodeURIComponent(readSeed());
+      return `https://bc.godfat.org/?seed=${seed}&event=${encodeURIComponent(eventId)}&lang=tw&display=both`;
+    }
+
+    function render() {
+      const data = state.data;
+      if (!data) return;
+
+      const today = new Date().toISOString().slice(0, 10);
+      const [year, month] = $("month").value.split("-").map(Number);
+      const monthStart = `${year}-${String(month).padStart(2, "0")}-01`;
+      const monthEnd = new Date(Date.UTC(year, month, 0)).toISOString().slice(0, 10);
+      const from = startAfter($("currentPosition").value);
+      const statusFilter = $("statusFilter").value;
+
+      const cards = [];
+      const counts = {all: 0, live: 0, upcoming: 0, past: 0};
+      let visibleCount = 0;
+      const events = Object.values(data.events)
+        .filter((event) => event.start_on <= monthEnd && event.end_on >= monthStart)
+        .filter((event) => !isTicketPool(event))
+        .sort((a, b) => (b.start_on + b.id).localeCompare(a.start_on + a.id));
+
+      for (const event of events) {
+        const nextUbers = findNextUbers(data, event, from);
+        if (!nextUbers.length) continue;
+        const [status, statusText] = statusFor(event, today);
+        counts.all += 1;
+        counts[status] += 1;
+        if (statusFilter !== "all" && statusFilter !== status) continue;
+        visibleCount += 1;
+        cards.push(renderCard(event, nextUbers, status, statusText));
+      }
+
+      $("notice").hidden = true;
+      $("summary").hidden = false;
+      $("summary").innerHTML = `
+        <div class="metric"><span>資料日期</span><strong>${escapeHtml(today)}</strong></div>
+        <div class="metric"><span>顯示中</span><strong>${visibleCount}</strong></div>
+        <div class="metric"><span>進行中</span><strong>${counts.live}</strong></div>
+        <div class="metric"><span>未來</span><strong>${counts.upcoming}</strong><span>已排除白金/傳說轉蛋</span></div>
+      `;
+      $("results").innerHTML = cards.join("") || `<div class="notice">這個篩選沒有結果。</div>`;
+    }
+
+    function renderUberRows(ubers) {
+      return ubers.map((next) => {
+        const legend = next.rarity === 5 ? " / 傳說" : "";
+        return `
+          <div class="answer">
+            <span class="pos">${escapeHtml(next.number)}</span>
+            <div>
+              <div class="cat">${escapeHtml(next.name)}</div>
+              <div class="meta">#${escapeHtml(next.id)} / ${RARITY[next.rarity]}${legend}</div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderCard(event, nextUbers, status, statusText) {
+      return `
+        <article class="pool ${status}">
+          <div class="top">
+            <span class="status">${escapeHtml(statusText)}</span>
+            <span class="date">${escapeHtml(event.start_on)} - ${escapeHtml(event.end_on)}</span>
+          </div>
+          <h2>${escapeHtml(event.name)}</h2>
+          <div class="event-id">${escapeHtml(event.id)}</div>
+          <div class="answers">
+            ${renderUberRows(nextUbers)}
+          </div>
+          <div class="rates">
+            <span>稀有 ${(event.rare / 100).toFixed(1)}%</span>
+            <span>激稀有 ${(event.supa / 100).toFixed(1)}%</span>
+            <span>超激 ${(event.uber / 100).toFixed(1)}%</span>
+          </div>
+          <a class="open" href="${eventUrl(event.id)}" target="_blank" rel="noopener noreferrer">在上游完整工具開啟</a>
+        </article>
+      `;
+    }
+
+    function renderSafely() {
+      try {
+        render();
+      } catch (error) {
+        $("notice").hidden = false;
+        $("notice").textContent = `無法計算：${error.message}`;
+        $("summary").hidden = true;
+        $("results").replaceChildren();
+      }
+    }
+
+    function loadPreferences() {
+      $("seed").value = localStorage.getItem(STORAGE.seed) || "";
+      $("currentPosition").value = localStorage.getItem(STORAGE.position) || "1A";
+      $("month").value = new Date().toISOString().slice(0, 7);
+    }
+
+    function savePreferences() {
+      localStorage.setItem(STORAGE.seed, $("seed").value.trim());
+      localStorage.setItem(STORAGE.position, $("currentPosition").value.trim().toUpperCase());
+    }
+
+    async function init() {
+      try {
+        loadPreferences();
+        const response = await fetch(DATA_URL, {cache: "no-store"});
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        state.data = await response.json();
+        if ($("seed").value) renderSafely();
+        else $("notice").textContent = "資料已載入。請輸入已知 seed 後計算。";
+      } catch (error) {
+        $("notice").innerHTML = `資料讀取失敗。請從專案根目錄跑 <strong>python3 -m http.server 18181</strong>，再開 <strong>http://127.0.0.1:18181/site/</strong>。錯誤：${escapeHtml(error.message)}`;
+      }
+    }
+
+    function setStatusFilter(value) {
+      $("statusFilter").value = value;
+      document.querySelectorAll("[data-status]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.status === value);
+      });
+      renderSafely();
+    }
+
+    $("run").addEventListener("click", () => {
+      savePreferences();
+      renderSafely();
+    });
+    $("statusFilter").addEventListener("change", (event) => setStatusFilter(event.target.value));
+    document.querySelectorAll("[data-status]").forEach((button) => {
+      button.addEventListener("click", () => setStatusFilter(button.dataset.status));
+    });
+    init();
+  </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 {
   "source": "https://gitlab.com/godfat/battle-cats-rolls/-/raw/master/build/bc-tw.yaml",
-  "source_sha256": "d0dfd77a55e053f072b29a4910ed669b6e468894e594f9e518b605c9b4204286",
+  "source_sha256": "4dc29dfbfec9315b9eeb5ba8db3f998ef554efce011c3919addc6efe5616d996",
   "lang": "tw",
   "cats": {
     "1": {
@@ -119505,6 +119505,84 @@
       "guaranteed": false,
       "step_up": false,
       "version": "150600"
+    },
+    "2026-11-02_1079": {
+      "id": "2026-11-02_1079",
+      "name": "熱血角色大集合的「熱血!大運動會」轉蛋陣容更新！★點圖確認詳細吧!!",
+      "gacha_id": 1079,
+      "start_on": "2026-11-02",
+      "end_on": "2026-11-16",
+      "rare": 7000,
+      "supa": 2500,
+      "uber": 500,
+      "guaranteed": false,
+      "step_up": false,
+      "version": "150700"
+    },
+    "2026-11-02_1080": {
+      "id": "2026-11-02_1080",
+      "name": "「龍一」參戰！「熱血！大運動會」轉蛋登場！★點圖確認詳細吧!!",
+      "gacha_id": 1080,
+      "start_on": "2026-11-02",
+      "end_on": "2026-11-16",
+      "rare": 7000,
+      "supa": 2500,
+      "uber": 500,
+      "guaranteed": false,
+      "step_up": false,
+      "version": "150700"
+    },
+    "2026-11-02_926": {
+      "id": "2026-11-02_926",
+      "name": "萬聖節裝扮的限定角色們大集合！★點圖確認詳細吧!!",
+      "gacha_id": 926,
+      "start_on": "2026-11-02",
+      "end_on": "2026-11-16",
+      "rare": 7000,
+      "supa": 2500,
+      "uber": 500,
+      "guaranteed": false,
+      "step_up": false,
+      "version": "150700"
+    },
+    "2026-11-09_1079": {
+      "id": "2026-11-09_1079",
+      "name": "熱血角色大集合的「熱血!大運動會」轉蛋陣容更新！★點圖確認詳細吧!!",
+      "gacha_id": 1079,
+      "start_on": "2026-11-09",
+      "end_on": "2026-11-16",
+      "rare": 7000,
+      "supa": 2500,
+      "uber": 500,
+      "guaranteed": true,
+      "step_up": false,
+      "version": "150700"
+    },
+    "2026-11-09_1080": {
+      "id": "2026-11-09_1080",
+      "name": "「龍一」參戰！「熱血！大運動會」轉蛋登場！★點圖確認詳細吧!!",
+      "gacha_id": 1080,
+      "start_on": "2026-11-09",
+      "end_on": "2026-11-16",
+      "rare": 7000,
+      "supa": 2500,
+      "uber": 500,
+      "guaranteed": true,
+      "step_up": false,
+      "version": "150700"
+    },
+    "2026-11-09_926": {
+      "id": "2026-11-09_926",
+      "name": "萬聖節裝扮的限定角色們大集合！★點圖確認詳細吧!!",
+      "gacha_id": 926,
+      "start_on": "2026-11-09",
+      "end_on": "2026-11-16",
+      "rare": 7000,
+      "supa": 2500,
+      "uber": 500,
+      "guaranteed": true,
+      "step_up": false,
+      "version": "150700"
     }
   }
 }
